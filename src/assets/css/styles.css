@@ -1,0 +1,38 @@
+.calc-box {
+  padding: 5px;
+  box-sizing: border-box;
+  border: 2px solid #2196F3;
+  border-radius: 4px;
+}
+
+.key-row {
+  padding-left: 4px;
+}
+
+.disp-box {
+  min-height: 120px;
+  padding: 5px;
+  box-sizing: border-box;
+  border: 2px solid #2196F3;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.eqn-box, .res-box {
+  min-height: 50px;
+  font-size: 2em;
+}
+
+input.eqn, input.eqn:focus {
+  border: none;
+  line-height: 1.6;
+  height: auto;
+}
+
+.fsem15 {
+  font-size: 1.5rem;
+}
+
+.fsem2 {
+  font-size: 2rem;
+}
