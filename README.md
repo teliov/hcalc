@@ -4,6 +4,8 @@
 
 ## Build Setup
 
+You would need to use node > `6` to get this to build
+
 ``` bash
 # install dependencies
 npm install
