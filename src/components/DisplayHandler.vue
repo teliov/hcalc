@@ -1,7 +1,7 @@
 <template>
   <div class="disp-box">
     <div class="eqn-box">
-      <input type="text" class="eqn" v-model="eqnStr" v-on:blur="reFocus" autofocus>
+      <input ref="eqn-box" type="text" class="eqn" v-model="eqnStr" v-on:blur="reFocus" autofocus>
     </div>
 
     <div class="res-box">
@@ -29,8 +29,9 @@
       }
     },
     methods: {
-      reFocus: function(event) {
-        event.target.focus();
+      reFocus: function() {
+        let target = this.$refs['eqn-box'];
+        target.focus();
       }
     },
     watch: {
@@ -59,6 +60,8 @@
         if (eqnHasChanged) {
           this.$emit("eqnchanged", this.eqnStr);
         }
+
+        this.reFocus();
       },
 
       dispRes: function (value) {

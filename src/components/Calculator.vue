@@ -31,14 +31,13 @@ export default Vue.component('calculator', {
   methods: {
     onKeyPressed: function (value) {
       const commands = ["ANS", "CLR", "RESET", "DEL", "="];
-      if (!Number.isNaN(Number.parseInt(value))) {
-        this.calcChar = value;
-        this.calcChar += "|" + (new Date()).getTime();
-      } else if (commands.indexOf(value.toUpperCase()) > -1) {
+      if (commands.indexOf(value.toUpperCase()) > -1) {
         this.handleCommand(value);
       } else {
-        // has to be a char;
         this.calcChar = value;
+        // appending a timestamp makes it so that we can type the same two characters
+        // consecutively; otherwise, vue would not be able to distinguish that the
+        // calcChar has changed value; since the previous char is the same as the newly typed character
         this.calcChar += "|" + (new Date()).getTime();
       }
     },
