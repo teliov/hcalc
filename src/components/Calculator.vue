@@ -3,7 +3,11 @@
     <DisplayHandler
       v-on:eval="onEval"
       v-on:eqnchanged="onEqnChanged"
-      v-bind:dispEqn="calcEqn" v-bind:dispRes="calcRes" v-bind:currChar="calcChar"></DisplayHandler>
+      v-bind:dispEqn="calcEqn"
+      v-bind:dispRes="calcRes"
+      v-bind:bus="bus"
+      v-bind:currChar="calcChar">
+      </DisplayHandler>
     <Keypad v-on:keypressed="onKeyPressed"></Keypad>
   </div>
 </template>
@@ -24,14 +28,16 @@ export default Vue.component('calculator', {
     return {
       calcEqn: "",
       calcRes: "",
-      calcChar: ""
+      calcChar: "",
+      bus: new Vue()
     }
   },
 
   methods: {
     onKeyPressed: function (value) {
       const commands = ["ANS", "CLR", "RESET", "DEL", "="];
-      if (commands.indexOf(value.toUpperCase()) > -1) {
+
+      if (commands.indexOf(value.toString().toUpperCase()) > -1) {
         this.handleCommand(value);
       } else {
         this.calcChar = value;
@@ -52,18 +58,20 @@ export default Vue.component('calculator', {
 
     handleCommand: function (command) {
       command = command.toLowerCase();
+
       switch (command) {
         case "ans":
           this.onKeyPressed(this.calcRes);
           break;
         case "del":
+          this.bus.$emit('calc-event', 'do-delete');
           break;
         case "clr":
-          this.calcEqn = "";
+          this.resetEqn();
           break;
         case "reset":
-          this.calcEqn = "";
-          this.calcRes = "";
+          this.resetEqn();
+          this.resetResult();
           break;
         case "=":
           let eqn = this.calcEqn;
@@ -76,6 +84,14 @@ export default Vue.component('calculator', {
           }
           break;
       }
+    },
+
+    resetEqn: function() {
+      this.calcEqn = "";
+    },
+
+    resetResult: function () {
+      this.calcRes = "";
     }
   }
 });

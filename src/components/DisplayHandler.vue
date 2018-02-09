@@ -14,7 +14,17 @@
   import Vue from 'vue';
   export default Vue.component('display-handler', {
     name: 'DisplayHandler',
-    props: ['dispEqn', 'dispRes', 'currChar'],
+    props: ['dispEqn', 'dispRes', 'currChar', 'bus'],
+    created: function () {
+      let _this = this;
+      this.bus.$on('calc-event', (action) => {
+        switch (action) {
+          case 'do-delete':
+            this.doDelete();
+            break;
+        }
+      })
+    },
     data: function () {
       let resStr = "";
       if (this.dispRes) {
@@ -31,6 +41,17 @@
     methods: {
       reFocus: function() {
         let target = this.$refs['eqn-box'];
+        target.focus();
+      },
+
+      doDelete: function () {
+        let target = this.$refs['eqn-box'];
+        let selectionIndex = target.selectionStart;
+        let value = target.value;
+        if (value) {
+          this.eqnStr = value.slice(0,selectionIndex-1) + value.slice(selectionIndex);
+        }
+
         target.focus();
       }
     },
@@ -70,18 +91,40 @@
         } else {
           this.resStr = this.dispRes
         }
+
+        this.reFocus();
       },
 
       dispEqn: function (value) {
         this.eqnStr = value;
+        this.$emit("eqnchanged", this.eqnStr);
       },
 
       eqnStr: function (newValue, oldValue) {
-        const reg = /^[1234567890\-\+\/\.\(\)\*xX]+=?$/;
+        const reg = /^[1234567890\-\+\/\.\(\)\*xX=]+$/;
         let emitEval = false;
         if (reg.test(newValue) || newValue == "") {
-          if (newValue[newValue.length - 1] == "=") {
-            newValue = newValue.slice(0, -1);
+          let newChar = null;
+          let idx = 0;
+          for (idx=0; idx < newValue.length; idx++) {
+            if (oldValue.length - 1 >= idx) {
+              let tempNewChar = newValue[idx];
+              let tempOldChar = oldValue[idx];
+
+              if (tempNewChar !== tempOldChar) {
+                newChar = newValue[idx];
+              }
+            } else {
+              newChar = newValue[idx];
+            }
+
+            if (newChar !== null) {
+              break;
+            }
+          }
+
+          if (newChar === "=") {
+            newValue = newValue.slice(0, idx) + newValue.slice(idx+1);
             emitEval = true;
           }
 
